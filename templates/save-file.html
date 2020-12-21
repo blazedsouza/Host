@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Upload File to Postgres</title>
+<style>
+body {background-color: rgb(148, 202, 46);}
+h1 {font-size: 32pt; color:blueviolet;}
+.div-primary {margin: auto; padding-left: 20px; padding-right: 20px;}
+.frm-fld-label {text-align: center; padding: 20px;}
+.frm-fld-input {text-align: left;}
+.frm-fld-btn-save {text-align: center; padding: 20px;}
+.frm-bnt-save-file {width: auto; color: blueviolet;}
+.div-input-file {width: 60px; background-color:coral;}
+</style>
+</head>
+<body style='background-color:honeydew'>
+<div class='div-primary' align="center">
+    <h1>Upload File for Encryption</h1>
+    <form action = '/encrypt' method = 'POST' enctype = 'multipart/form-data'>
+    <div class = 'row'>
+        <div class = 'frm-fld-label' >Select a file from your computer</div>
+        <input type = 'file' name = 'file_name' id = 'file_name'></div>
+    </div>
+    <br>
+    <div class='div-primary' align="center">
+            <input type="password" placeholder="Password" name="password" value="{{
+             request.form.password }}">
+           <input class="frm-bnt-save-file" type="submit" value="Encrypt" >
+         {% if error %}
+           <p class="error"><strong>Error:</strong> {{ error }}
+         {% endif %}
+    </div>
+    </div>
+    </form>
+</div>
+
+<div class='div-primary' align="center">
+  <h1>Upload File for Decryption</h1>
+  <form action = '/decrypt' method = 'POST' enctype = 'multipart/form-data'>
+  <div class = 'row'>
+      <div class = 'frm-fld-label' >Select a file from your computer</div>
+      <input type = 'file' name = 'file_name' id = 'file_name'></div>
+  </div>
+  <br>
+  <div class='div-primary' align="center">
+          <input type="password" placeholder="Password" name="password" value="{{
+           request.form.password }}">
+         <input class="frm-bnt-save-file" type="submit" value="Decrypt" >
+       {% if error %}
+         <p class="error"><strong>Error:</strong> {{ error }}
+       {% endif %}
+  </div>
+  </div>
+  </form>
+</div>
+</body>
+</html>
