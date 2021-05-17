@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 import base64
 from flask import send_from_directory
 from flask import redirect
+import ssl
 
 UPLOAD_FOLDER = 'uploads/'
 app = Flask(__name__, template_folder='templates')
@@ -27,6 +28,7 @@ database_uri = 'postgresql+psycopg2://{dbuser}:{dbpass}@{dbhost}/{dbname}'.forma
     dbhost="localhost",
     dbname="securitydb"
 )
+
 
 
 
@@ -70,7 +72,7 @@ def token_required(f):
             data = jwt.decode(token, app.config['SECRET_KEY'])
 
         except:
-            return render_template('login.html')
+            return jsonify({'message' : 'Token is Invalid!'}), 403
 
         return f(*args, **kwargs)
     
@@ -106,13 +108,14 @@ def login():
         user = User.query.filter_by(name=form.username.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
-                token = jwt.encode({'username' : form.username.data, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+                token = jwt.encode({'username' : form.username.data, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds=60)}, app.config['SECRET_KEY'])
 
                 return jsonify({'token' : token.decode('UTF-8')})
         return 'Invalid Username or password'
     return render_template('login.html', form=form)
 
 @app.route("/encrypt", methods=["GET", "POST"])
+@token_required
 def enc():
     error = None
     if request.method == "POST":
@@ -206,6 +209,5 @@ def decryption(password, file):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
-
+    
+    app.run(ssl_context=('cert.pem', 'key.pem'))
